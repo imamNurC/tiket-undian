@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undian Hadiah</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .ticket {
+            width: 300px;
+            display: flex;
+            background: #004080;
+            color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #002060;
+            position: relative;
+        }
+        .ticket-left, .ticket-right {
+            padding: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .ticket-left {
+            background: white;
+            color: #004080;
+            flex: 2;
+            border-right: 2px dashed #004080;
+            padding: 15px;
+        }
+        .ticket-right {
+            background: #004080;
+            flex: 1;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ticket h3 {
+            margin: 5px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .ticket p {
+            margin: 2px 0;
+            font-size: 12px;
+        }
+        .highlight-box {
+            background: #ffeb99;
+            padding: 5px;
+            width: 100%;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .ticket-number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .ticket::before, .ticket::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 10px;
+            height: 100%;
+            background: white;
+            clip-path: repeating-linear-gradient(90deg, transparent, transparent 3px, #004080 3px, #004080 6px);
+        }
+        .ticket::before {
+            left: -10px;
+        }
+        .ticket::after {
+            right: -10px;
+        }
+        
+        @media print {
+            body {
+                background: none;
+            }
+            .container {
+                display: block;
+            }
+            .ticket {
+                page-break-inside: avoid;
+            }
+            button, input {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Undian Hadiah</h2>
+    <label for="ticketCount">Jumlah Tiket:</label>
+    <input type="number" id="ticketCount" value="12" min="1" max="100">
+    <button onclick="generateTickets()">Buat Tiket</button>
+    <button id="printBtn" onclick="window.print()" style="display:none;">Cetak PDF</button>
+    
+    <div class="container" id="ticketContainer"></div>
+    
+    <script>
+        function generateTickets() {
+            const count = document.getElementById('ticketCount').value;
+            const container = document.getElementById('ticketContainer');
+            container.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                const ticket = document.createElement('div');
+                ticket.className = 'ticket';
+                ticket.innerHTML = `
+                    <div class="ticket-left">
+                        <h3>UNDIAH HADIAH</h3>
+                        <h3>HALAL BI HALAL BANI FAQIH</h3>
+                        <div class="highlight-box">
+                            Nama: ______ <br>
+                            Asal: ______
+                        </div>
+                        <p>*Kupon ini harap dimasukkan ke dalam kotak undian</p>
+                    </div>
+                    <div class="ticket-right">
+                        ${String(i).padStart(3, '0')}
+                    </div>
+                `;
+                container.appendChild(ticket);
+            }
+            document.getElementById('printBtn').style.display = 'inline-block';
+        }
+        
+        window.onload = generateTickets;
+    </script>
+</body>
+</html>
