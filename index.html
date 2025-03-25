@@ -97,12 +97,9 @@
                 background: none;
             }
             .container {
-                display: block;
+                grid-template-columns: repeat(2, 1fr);
             }
-            .ticket {
-                page-break-inside: avoid;
-            }
-            button, input {
+            button {
                 display: none;
             }
         }
@@ -113,7 +110,7 @@
     <label for="ticketCount">Jumlah Tiket:</label>
     <input type="number" id="ticketCount" value="12" min="1" max="100">
     <button onclick="generateTickets()">Buat Tiket</button>
-    <button id="printBtn" onclick="window.print()" style="display:none;">Cetak PDF</button>
+    <button id="printBtn" onclick="downloadPDF()" style="display:none;">Cetak PDF</button>
     
     <div class="container" id="ticketContainer"></div>
     
@@ -142,6 +139,27 @@
                 container.appendChild(ticket);
             }
             document.getElementById('printBtn').style.display = 'inline-block';
+        }
+        
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const tickets = document.querySelectorAll('.ticket');
+            if (tickets.length === 0) return;
+            let y = 10;
+            tickets.forEach((ticket, index) => {
+                doc.text(`UNDIAH HADIAH - HALAL BI HALAL BANI FAQIH`, 10, y);
+                doc.text(`Nama: _______`, 10, y + 10);
+                doc.text(`Asal: _______`, 10, y + 20);
+                doc.text(`No: ${String(index + 1).padStart(3, '0')}`, 10, y + 30);
+                doc.line(10, y + 35, 100, y + 35);
+                y += 45;
+                if (y > 270) {
+                    doc.addPage();
+                    y = 10;
+                }
+            });
+            doc.save('undian_hadiah.pdf');
         }
         
         window.onload = generateTickets;
